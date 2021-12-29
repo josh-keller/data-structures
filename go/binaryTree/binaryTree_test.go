@@ -3,13 +3,14 @@ package binaryTree
 import (
 	"fmt"
 	"testing"
+  "strings"
 )
 
 func TestMakeTree(t *testing.T) {
 	got := MakeTree()
-	want := NodeTree{}
+	want := nodeTree{}
 
-	tree, ok := got.(*NodeTree)
+	tree, ok := got.(*nodeTree)
 
 	if !ok || *tree != want {
 		t.Errorf("got %v, wanted %v", got, want)
@@ -17,7 +18,7 @@ func TestMakeTree(t *testing.T) {
 }
 
 func TestInsertEmpty(t *testing.T) {
-	tree := NodeTree{nil}
+	tree := nodeTree{nil}
 	tree.Insert(5)
 	fmt.Println(tree.root)
 	got := tree.root.val
@@ -29,7 +30,7 @@ func TestInsertEmpty(t *testing.T) {
 }
 
 func TestInsertValLessThanRoot(t *testing.T) {
-	tree := NodeTree{nil}
+	tree := nodeTree{nil}
 	tree.Insert(5)
 	tree.Insert(3)
 	got := tree.root.left.val
@@ -41,7 +42,7 @@ func TestInsertValLessThanRoot(t *testing.T) {
 }
 
 func TestInsertValGreaterThanRoot(t *testing.T) {
-	tree := NodeTree{}
+	tree := nodeTree{}
 	tree.Insert(5)
 	tree.Insert(7)
 	got := tree.root.right.val
@@ -53,7 +54,7 @@ func TestInsertValGreaterThanRoot(t *testing.T) {
 }
 
 func TestInsertTwoLevels(t *testing.T) {
-	tree := NodeTree{}
+	tree := nodeTree{}
 	tree.Insert(4).Insert(2).Insert(1).Insert(3).Insert(6).Insert(5).Insert(7)
 
 	got := tree.root.left.left.val
@@ -93,7 +94,7 @@ func TestInsertTwoLevels(t *testing.T) {
 }
 
 func TestSearch(t *testing.T) {
-	tree := NodeTree{}
+	tree := nodeTree{}
 	tree.Insert(4).Insert(2).Insert(1).Insert(3).Insert(6).Insert(5).Insert(7)
 
 	got := tree.Search(3)
@@ -133,7 +134,7 @@ func TestSearch(t *testing.T) {
 }
 
 func TestSuccessorNode(t *testing.T) {
-	tree := NodeTree{}
+	tree := nodeTree{}
 	tree.Insert(50)
 	tree.Insert(25).Insert(75)
 	tree.Insert(10).Insert(33).Insert(56).Insert(89)
@@ -172,7 +173,7 @@ func TestSuccessorNode(t *testing.T) {
 }
 
 func TestDelete(t *testing.T) {
-	tree := NodeTree{}
+	tree := nodeTree{}
 	tree.Insert(50)
 	tree.Insert(25).Insert(75)
 	tree.Insert(10).Insert(33).Insert(56).Insert(89)
@@ -260,14 +261,23 @@ func TestDelete(t *testing.T) {
 }
 
 func TestTraverse(t *testing.T) {
-	tree := NodeTree{}
+	tree := nodeTree{}
 	tree.Insert(50)
 	tree.Insert(25).Insert(75)
 	tree.Insert(10).Insert(33).Insert(56).Insert(89)
 	tree.Insert(4).Insert(11).Insert(30).Insert(40)
 	tree.Insert(52).Insert(61).Insert(82).Insert(95)
 
+  var b strings.Builder
+
 	tree.Traverse(func(v int) {
-		fmt.Println(v)
+		fmt.Fprint(&b, v, " ")
 	})
+
+  got := b.String()
+  want := "4 10 11 25 30 33 40 50 52 56 61 75 82 89 95 "
+
+	if got != want {
+		t.Errorf("got %q, wanted %q", got, want)
+	}
 }

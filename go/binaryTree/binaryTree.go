@@ -15,12 +15,12 @@ type node struct {
 	right *node
 }
 
-type NodeTree struct {
+type nodeTree struct {
 	root *node
 }
 
 func MakeTree() Tree {
-	return &NodeTree{nil}
+	return &nodeTree{nil}
 }
 
 func (n *node) insert(v int) {
@@ -32,13 +32,35 @@ func (n *node) insert(v int) {
 		} else {
 			n.left.insert(v)
 		}
-	} else {
+	} else if v > n.val {
 		if n.right == nil {
 			n.right = &newNode
 		} else {
 			n.right.insert(v)
 		}
 	}
+}
+
+func (n *node) delete(val int) *node {
+	if n == nil {
+		fmt.Println("val to delete not found")
+		return nil
+	} else if val < n.val {
+		n.left = n.left.delete(val)
+		return n
+	} else if val > n.val {
+		n.right = n.right.delete(val)
+		return n
+  } else {
+    if n.left == nil {
+      return n.right
+    } else if n.right == nil {
+      return n.left
+    } else {
+      n.right = lift(n.right, n)
+      return n
+    }
+  }
 }
 
 func (n *node) traverseLeft() *node {
@@ -83,7 +105,7 @@ func (n *node) search(v int) *node {
 	}
 }
 
-func (t *NodeTree) Delete(val int) {
+func (t *nodeTree) Delete(val int) {
 	t.root.delete(val)
 }
 
@@ -99,7 +121,7 @@ func lift(n, toDelete *node) *node {
 	}
 }
 
-func (t NodeTree) Traverse(f func(val int)) {
+func (t nodeTree) Traverse(f func(val int)) {
 	t.root.traverse(f)
 }
 
@@ -113,32 +135,13 @@ func (n *node) traverse(f func(val int)) {
 	n.right.traverse(f)
 }
 
-func (n *node) delete(val int) *node {
-	if n == nil {
-		fmt.Println("val to delete not found")
-		return nil
-	} else if val < n.val {
-		n.left = n.left.delete(val)
-		return n
-	} else if val > n.val {
-		n.right = n.right.delete(val)
-		return n
-	} else if n.left == nil {
-		return n.right
-	} else if n.right == nil {
-		return n.left
-	} else {
-		n.right = lift(n.right, n)
-		return n
-	}
-}
 
-func (t *NodeTree) Search(v int) bool {
+func (t *nodeTree) Search(v int) bool {
 	n := t.root.search(v)
 	return n != nil
 }
 
-func (t *NodeTree) Insert(v int) Tree {
+func (t *nodeTree) Insert(v int) Tree {
 	if t.root == nil {
 		t.root = &node{v, nil, nil}
 	} else {
