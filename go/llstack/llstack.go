@@ -10,7 +10,9 @@ type node struct {
 type Stack interface {
 	Push(val int)
 	Pop() int
+	Peek() int
 	Length() int
+	IsEmpty() bool
 	String() string
 }
 
@@ -31,7 +33,7 @@ func (s *llStack) Push(val int) {
 
 func (s *llStack) Pop() int {
 	if s.length == 0 {
-		panic("Cannot pop from an empty stack!")
+		panic("Stack is empty")
 	}
 
 	n := *s.head
@@ -39,6 +41,18 @@ func (s *llStack) Pop() int {
 	s.length -= 1
 
 	return n.val
+}
+
+func (s *llStack) IsEmpty() bool {
+	return s.length == 0
+}
+
+func (s *llStack) Peek() int {
+	if s.length == 0 {
+		panic("Stack is empty")
+	}
+
+	return s.head.val
 }
 
 func NewStack() Stack {
